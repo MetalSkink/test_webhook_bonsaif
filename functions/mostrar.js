@@ -23,6 +23,7 @@ exports.handler = async (event, context) => {
                 <th>Fecha</th>
                 <th>Datos</th>
             </tr>`;
+    console.log("# ~ app.get ~ registros:", registros);
 
     registros.forEach(registro => {
         html += `

@@ -13,39 +13,25 @@
 </head>
 <body>
     <h2>Registros Recibidos</h2>
-    <table>
+    <table id="tabla-registros">
         <tr>
             <th>Fecha</th>
             <th>Datos</th>
         </tr>
-        <!-- La tabla se llenará con JavaScript -->
     </table>
 
     <script>
-        // Función para cargar y mostrar los registros
         async function cargarRegistros() {
             try {
-                const response = await fetch('/.netlify/functions/registros');
-                const registros = await response.json();
-
-                let html = '';
-                registros.forEach(registro => {
-                    html += `
-                        <tr>
-                            <td>${registro.fecha}</td>
-                            <td><pre>${JSON.stringify(registro.datos, null, 2)}</pre></td>
-                        </tr>
-                    `;
-                });
-
-                document.querySelector('table').innerHTML += html;
+                const response = await fetch("/.netlify/functions/registros");
+                const html = await response.text();
+                document.body.innerHTML = html;
             } catch (error) {
-                console.error('Error al cargar los registros:', error);
+                console.error("Error al cargar los registros:", error);
             }
         }
-
-        // Llamamos a la función para cargar los registros cuando cargue la página
-        window.onload = cargarRegistros;
+        cargarRegistros();
+        setInterval(cargarRegistros, 5000);
     </script>
 </body>
 </html>
