@@ -3,54 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulario de Registro</title>
+    <title>Registros Recibidos</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        table { width: 80%; margin: auto; border-collapse: collapse; }
+        th, td { border: 1px solid black; padding: 8px; }
+        th { background-color: #f2f2f2; }
+    </style>
 </head>
 <body>
-    <h1>Enviar Registro</h1>
-    <form id="registro-form">
-        <input type="text" id="telefono" name="telefono" placeholder="Teléfono" required>
-        <input type="text" id="duracion" name="duracion" placeholder="Duración" required>
-        <input type="text" id="fecha" name="fecha" placeholder="Fecha" required>
-        <input type="submit" value="Enviar">
-    </form>
-
     <h2>Registros Recibidos</h2>
-    <div id="registros"></div>
+    <table>
+        <tr>
+            <th>Fecha</th>
+            <th>Datos</th>
+        </tr>
+        <!-- La tabla se llenará con JavaScript -->
+    </table>
 
     <script>
-        document.getElementById('registro-form').addEventListener('submit', async function(event) {
-            event.preventDefault();
-
-            const data = {
-                telefono: document.getElementById('telefono').value,
-                duracion: document.getElementById('duracion').value,
-                fecha: document.getElementById('fecha').value
-            };
-
+        // Función para cargar y mostrar los registros
+        async function cargarRegistros() {
             try {
-                const response = await fetch('/.netlify/functions/registro', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
+                const response = await fetch('/.netlify/functions/registros');
+                const registros = await response.json();
+
+                let html = '';
+                registros.forEach(registro => {
+                    html += `
+                        <tr>
+                            <td>${registro.fecha}</td>
+                            <td><pre>${JSON.stringify(registro.datos, null, 2)}</pre></td>
+                        </tr>
+                    `;
                 });
 
-                const result = await response.json();
-                alert(result.mensaje);
+                document.querySelector('table').innerHTML += html;
             } catch (error) {
-                console.error('Error:', error);
+                console.error('Error al cargar los registros:', error);
             }
-        });
-
-        // Mostrar registros (puedes hacerlo con fetch)
-        async function cargarRegistros() {
-            const response = await fetch('/.netlify/functions/mostrar');
-            const html = await response.text();
-            document.getElementById('registros').innerHTML = html;
         }
 
-        setInterval(cargarRegistros, 5000);  // Actualiza cada 5 segundos
+        // Llamamos a la función para cargar los registros cuando cargue la página
+        window.onload = cargarRegistros;
     </script>
 </body>
 </html>
