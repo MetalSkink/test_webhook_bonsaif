@@ -1,0 +1,7 @@
+[build]
+  functions = "functions"  # Este es el directorio donde colocarás las funciones lambda
+
+[[redirects]]
+  from = "/"
+  to = "/index.html"
+  status = 200
